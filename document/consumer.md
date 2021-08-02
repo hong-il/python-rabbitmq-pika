@@ -1,14 +1,23 @@
+<details>
+<summary>목록:</summary>
+  
+* [AMPQ 0-9-1](/README.md)  
+* [Pika - Broker편](/document/broker.md)
+
+</details>
+
 Pika는 Python 3.4+ 전용의 RabbitMQ(AMQP 0-9-1) 클라이언트 라이브러리입니다.
 
 AMQP는 클라이언트가 서버에 요청을 보낼 수 있고 서버 또한 클라이언트에 요청을 보낼 수 있는 양방향 RPC 프로토콜이기 때문에, 각 연결 어댑터에서 Pika를 활용한다면 IO 반복문을 더욱 수월하게 구현할 수 있습니다.
 
-# 1. Installing Pika
-
+**Installing Pika**
+-------------
 Pika는 PyPI를 통해 다운로드할 수 있으며 pip를 사용하여 설치할 수 있습니다.
 ```
 pip install pika
 ```
-# 2. Pika adapters
+**Pika adapters**
+-------------
 ```
 Pika에서 제공하는 커넥션 어댑터 목록은 다음과 같습니다. 여기서는 Deadlock 방지를 위해 BlockingConnection을 다룹니다.
 
@@ -24,8 +33,8 @@ pika.adapters.tornado_connection.TornadoConnection - Tornado 전용 비동기 �
 
 pika.adapters.twisted_connection.TwistedProtocolConnection - Twisted 전용 비동기 연결 어댑터
 ```
-# 3. Pika Connection
-
+**Pika Connection**
+-------------
 RabbitMQ에서 지원하는 모든 프로토콜은 TCP 기반이며 효율성을 위해 long-lived connection을 맺습니다.
 
 Client가 RabbitMQ에 연결하고 성공적으로 인증한 뒤에야 Message를 Publish하거나 Consume 할 수 있습니다.
@@ -40,8 +49,8 @@ connection = pika.BlockingConnection(
             parameters=pika.URLParameters(f"{rabbitmq_url}")
         )
 ```
-# 4. Pika Channel
-
+**Pika Channel**
+-------------
 Client가 수행하는 모든 프로토콜 작업은 Channel이 수행합니다. 일반적으로 Multiple threads/process 당 하나의 Channel 위에서 동작합니다.
 
 다음은 Channel에서 Consumer를 작동 시켜보겠습니다.
@@ -67,8 +76,8 @@ except Exception:
 ```
 각 Connection은 한정적인 Channel resource를 가지고 있으므로 사용하지 않는 Channel에 대해선 꼭 Consuming을 중지해주시기 바랍니다.
 
-# 5. Pika Acknowledgement
-
+**Pika Acknowledgement**
+-------------
 Channel 설정에서 auto_ack를 False로 지정해줬기 때문에 수동으로 on_message_callback method에서 Ack를 return 해줘야만 합니다. Client는 이 Ack를 통해 Message의 처리 성공여부를 판별할 수 있습니다. 작성 위치는 
 ```
 channel.basic_consume(queue={대상 queue}, on_message_callback={method명}, auto_ack=False)에서 지정했던 on_message_callback의 method 내부에 입력하시면 되겠습니다.
